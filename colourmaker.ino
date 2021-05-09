@@ -1,6 +1,6 @@
 /*The button part of this code was created following the example code below.
  * 
- *
+ *Small change to make sure change is only logged in the development branch and not in the master branch. 
  * The example code is in the public domain
  *
  * Tutorial page: https://arduinogetstarted.com/tutorials/arduino-button
