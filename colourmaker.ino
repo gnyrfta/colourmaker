@@ -71,23 +71,23 @@ void loop() {
 
   int buttonPressed = checkButtons();
   
-  if(currentProgram == 2)// chase yellow
+  if(currentProgram == 2)//  yellow button
   {
     Serial.println("Switching to rainbow 10");
     
     rainbow(10,2);    
   }
-  else if(currentProgram == 3) // chase blue
+  else if(currentProgram == 3) //  blue button
   {
     Serial.println("Switching to rainbow 100");
     rainbow(100,3);
    }
-  else if(currentProgram == 4) //chase green
+  else if(currentProgram == 4) // green button
   {
     Serial.println("Switching to rainbow 5");
    rainbow(5,4);
   }
-  else if(currentProgram == 5) //turn off pixels
+  else if(currentProgram == 5) //Second yellow button 
   {
     Serial.println("Turning off pixels.");
     strip.clear();
@@ -104,13 +104,7 @@ void loop() {
 
 }
 
-// Some functions of our own for creating animated effects -----------------
 
-// Fill strip pixels one after another with a color. Strip is NOT cleared
-// first; anything there will be covered pixel by pixel. Pass in color
-// (as a single 'packed' 32-bit value, which you can get by calling
-// strip.Color(red, green, blue) as shown in the loop() function above),
-// and a delay time (in milliseconds) between pixels.
 
 int checkButtons()
 {
@@ -189,30 +183,7 @@ int checkButtons()
 
 return newButtonPressed;
 }
-void colorWipe(uint32_t color, int wait) {
-  for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
-    strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
-    strip.show();                          //  Update strip to match
-    delay(wait);                           //  Pause for a moment
-  }
-}
 
-// Theater-marquee-style chasing lights. Pass in a color (32-bit value,
-// a la strip.Color(r,g,b) as mentioned above), and a delay time (in ms)
-// between frames.
-void theaterChase(uint32_t color, int wait) {
-  for(int a=0; a<10; a++) {  // Repeat 10 times...
-    for(int b=0; b<3; b++) { //  'b' counts from 0 to 2...
-      strip.clear();         //   Set all pixels in RAM to 0 (off)
-      // 'c' counts up from 'b' to end of strip in steps of 3...
-      for(int c=b; c<strip.numPixels(); c += 3) {
-        strip.setPixelColor(c, color); // Set pixel 'c' to value 'color'
-      }
-      strip.show(); // Update strip with new contents
-      delay(wait);  // Pause for a moment
-    }
-  }
-}
 
 // Rainbow cycle along whole strip. Pass delay time (in ms) between frames.
 void rainbow(int wait, int programNumber) {
@@ -253,6 +224,9 @@ void rainbow(int wait, int programNumber) {
   }
 }
 
+//####The below functions do not currently do anything in the program. ############
+//### These functions are from 'strandtest' - created by Adafruit themselves i believes as an open source example of their stuffs. The rainbow method above is also based on a strandtest example but had to be rewritten to be 'interruptable' by a buttonpress. 
+
 // Rainbow-enhanced theater marquee. Pass delay time (in ms) between frames.
 void theaterChaseRainbow(int wait) {
   int firstPixelHue = 0;     // First pixel starts at red (hue 0)
@@ -274,3 +248,34 @@ void theaterChaseRainbow(int wait) {
     }
   }
 }
+
+void colorWipe(uint32_t color, int wait) {
+  for(int i=0; i<strip.numPixels(); i++) { // For each pixel in strip...
+    strip.setPixelColor(i, color);         //  Set pixel's color (in RAM)
+    strip.show();                          //  Update strip to match
+    delay(wait);                           //  Pause for a moment
+  }
+}
+
+// Fill strip pixels one after another with a color. Strip is NOT cleared
+// first; anything there will be covered pixel by pixel. Pass in color
+// (as a single 'packed' 32-bit value, which you can get by calling
+// strip.Color(red, green, blue) as shown in the loop() function above),
+// and a delay time (in milliseconds) between pixels.
+// Theater-marquee-style chasing lights. Pass in a color (32-bit value,
+// a la strip.Color(r,g,b) as mentioned above), and a delay time (in ms)
+// between frames.
+void theaterChase(uint32_t color, int wait) {
+  for(int a=0; a<10; a++) {  // Repeat 10 times...
+    for(int b=0; b<3; b++) { //  'b' counts from 0 to 2...
+      strip.clear();         //   Set all pixels in RAM to 0 (off)
+      // 'c' counts up from 'b' to end of strip in steps of 3...
+      for(int c=b; c<strip.numPixels(); c += 3) {
+        strip.setPixelColor(c, color); // Set pixel 'c' to value 'color'
+      }
+      strip.show(); // Update strip with new contents
+      delay(wait);  // Pause for a moment
+    }
+  }
+}
+
