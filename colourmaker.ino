@@ -8,12 +8,16 @@
 #include <Adafruit_NeoPixel.h>
 
 #define LED_PIN    8
+#define LED_PIN2   9
+
 
 // How many NeoPixels are attached to the Arduino? 
 #define LED_COUNT 223
+#define LED_COUNT2 34
 
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip2(LED_COUNT2, LED_PIN2, NEO_GRB + NEO_KHZ800);
 // Argument 1 = Number of pixels in NeoPixel strip
 // Argument 2 = Arduino pin number (most are valid)
 // Argument 3 = Pixel type flags, add together as needed:
@@ -53,8 +57,11 @@ uint32_t color;
 
 void setup() {
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
+  strip2.begin();
   strip.show();            // Turn OFF all pixels ASAP
+  strip2.show();
   strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+  strip2.setBrightness(50);
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
   // initialize the pushbutton pin as an pull-up input
@@ -74,18 +81,17 @@ void loop() {
   if(currentProgram == 2)//  yellow button
   {
     Serial.println("Switching to rainbow 10");
-    
-    rainbow(10,2);    
+    rainbow(10,2,strip);    
   }
   else if(currentProgram == 3) //  blue button
   {
     Serial.println("Switching to rainbow 100");
-    rainbow(100,3);
+    rainbow(100,3,strip);
    }
   else if(currentProgram == 4) // green button
   {
     Serial.println("Switching to rainbow 5");
-   rainbow(5,4);
+   rainbow(5,4,strip);
   }
   else if(currentProgram == 5) //Second yellow button 
   {
@@ -95,11 +101,14 @@ void loop() {
   }
   else if(currentProgram == 6) //Does nothing right now.
   {
- 
+     Serial.println("Launching Rainbow program on lamps.");
+     rainbow(10,2,strip2);
   }
   else if(currentProgram == 7) // Does nothing right now.
   {
-    
+    Serial.println("Turning off lamps");
+    strip2.clear();
+    strip2.show();
   }
 
 }
@@ -186,7 +195,7 @@ return newButtonPressed;
 
 
 // Rainbow cycle along whole strip. Pass delay time (in ms) between frames.
-void rainbow(int wait, int programNumber) {
+void rainbow(int wait, int programNumber, Adafruit_NeoPixel thisStrip) {
   int buttonPressed = 0;
   // Hue of first pixel runs 5 complete loops through the color wheel.
   // Color wheel has a range of 65536 but it's OK if we roll over, so
@@ -199,7 +208,7 @@ void rainbow(int wait, int programNumber) {
    { 
     buttonPressed = checkButtons();
   
-    for(int i=0; i<strip.numPixels(); i++) 
+    for(int i=0; i<thisStrip.numPixels(); i++) 
     {
       int buttonPressed = checkButtons();
 
@@ -207,19 +216,19 @@ void rainbow(int wait, int programNumber) {
         // Offset pixel hue by an amount to make one full revolution of the
         // color wheel (range of 65536) along the length of the strip
         // (strip.numPixels() steps):
-        int pixelHue = firstPixelHue + (i * 65536L / strip.numPixels());
+        int pixelHue = firstPixelHue + (i * 65536L / thisStrip.numPixels());
         // strip.ColorHSV() can take 1 or 3 arguments: a hue (0 to 65535) or
         // optionally add saturation and value (brightness) (each 0 to 255).
         // Here we're using just the single-argument hue variant. The result
         // is passed through strip.gamma32() to provide 'truer' colors
         // before assigning to each pixel:
-        strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
+        thisStrip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
       
     }
    }
    else
    {firstPixelHue=1000000;}
-    strip.show(); // Update strip with new contents
+    thisStrip.show(); // Update strip with new contents
     delay(wait);  // Pause for a moment
   }
 }
