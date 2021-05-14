@@ -8,12 +8,14 @@
 #include <Adafruit_NeoPixel.h>
 
 #define LED_PIN    8
-
+#define LED_PIN2 9
 // How many NeoPixels are attached to the Arduino? 
 #define LED_COUNT 223
+#define LED_COUNT2 34
 
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip2(LED_COUNT2, LED_PIN2, NEO_GRB + NEO_KHZ800);
 // Argument 1 = Number of pixels in NeoPixel strip
 // Argument 2 = Arduino pin number (most are valid)
 // Argument 3 = Pixel type flags, add together as needed:
@@ -54,6 +56,9 @@ uint32_t color;
 void setup() {
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
   strip.show();            // Turn OFF all pixels ASAP
+  strip2.begin();
+  strip2.show();
+  strip2.setBrightness(50);
   strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
@@ -95,7 +100,7 @@ void loop() {
   }
   else if(currentProgram == 6) //Does nothing right now.
   {
- 
+   rainbow2(10,6);
   }
   else if(currentProgram == 7) // Does nothing right now.
   {
@@ -253,6 +258,43 @@ void rainbow(int wait, int programNumber) {
   }
 }
 
+void rainbow2(int wait, int programNumber) {
+  int buttonPressed = 0;
+  // Hue of first pixel runs 5 complete loops through the color wheel.
+  // Color wheel has a range of 65536 but it's OK if we roll over, so
+  // just count from 0 to 5*65536. Adding 256 to firstPixelHue each time
+  // means we'll make 5*65536/256 = 1280 passes through this outer loop:
+    
+  for(long firstPixelHue = 0; firstPixelHue < 5*65536; firstPixelHue += 256) 
+  {
+   if(currentProgram == programNumber)
+   { 
+    buttonPressed = checkButtons();
+  
+    for(int i=0; i<strip2.numPixels(); i++) 
+    {
+      int buttonPressed = checkButtons();
+
+        // For each pixel in strip...
+        // Offset pixel hue by an amount to make one full revolution of the
+        // color wheel (range of 65536) along the length of the strip
+        // (strip.numPixels() steps):
+        int pixelHue = firstPixelHue + (i * 65536L / strip2.numPixels());
+        // strip.ColorHSV() can take 1 or 3 arguments: a hue (0 to 65535) or
+        // optionally add saturation and value (brightness) (each 0 to 255).
+        // Here we're using just the single-argument hue variant. The result
+        // is passed through strip.gamma32() to provide 'truer' colors
+        // before assigning to each pixel:
+        strip2.setPixelColor(i, strip2.gamma32(strip2.ColorHSV(pixelHue)));
+      
+    }
+   }
+   else
+   {firstPixelHue=1000000;}
+    strip2.show(); // Update strip with new contents
+    delay(wait);  // Pause for a moment
+  }
+}
 // Rainbow-enhanced theater marquee. Pass delay time (in ms) between frames.
 void theaterChaseRainbow(int wait) {
   int firstPixelHue = 0;     // First pixel starts at red (hue 0)
