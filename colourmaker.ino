@@ -17,7 +17,7 @@
 
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel strip2(LED_COUNT2, LED_PIN2, NEO_GRB + NEO_KHZ800);
+//Adafruit_NeoPixel strip2(LED_COUNT2, LED_PIN2, NEO_GRB + NEO_KHZ800);
 // Argument 1 = Number of pixels in NeoPixel strip
 // Argument 2 = Arduino pin number (most are valid)
 // Argument 3 = Pixel type flags, add together as needed:
@@ -57,11 +57,11 @@ uint32_t color;
 
 void setup() {
   strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-  strip2.begin();
+  //strip2.begin();
   strip.show();            // Turn OFF all pixels ASAP
-  strip2.show();
+  //strip2.show();
   strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
-  strip2.setBrightness(50);
+  //strip2.setBrightness(50);
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
   // initialize the pushbutton pin as an pull-up input
@@ -96,19 +96,20 @@ void loop() {
   else if(currentProgram == 5) //Second yellow button 
   {
     Serial.println("Turning off pixels.");
+    //strip.clear();
     strip.clear();
     strip.show();
   }
   else if(currentProgram == 6) //Does nothing right now.
   {
      Serial.println("Launching Rainbow program on lamps.");
-     rainbow(10,2,strip2);
+   //  rainbow(10,2,strip2);
   }
   else if(currentProgram == 7) // Does nothing right now.
   {
     Serial.println("Turning off lamps");
-    strip2.clear();
-    strip2.show();
+    //strip2.clear();
+    //strip2.show();
   }
 
 }
@@ -230,6 +231,7 @@ void rainbow(int wait, int programNumber, Adafruit_NeoPixel thisStrip) {
    {firstPixelHue=1000000;}
     thisStrip.show(); // Update strip with new contents
     delay(wait);  // Pause for a moment
+    Serial.println("In rainbow, wait is done.");
   }
 }
 
