@@ -104,6 +104,8 @@ void loop() {
   }
   else if(currentProgram == 7) // Does nothing right now.
   {
+    strip2.clear();
+    strip2.show();2
     
   }
 
@@ -113,6 +115,7 @@ void loop() {
 
 // Fill strip pixels one after another with a color. Strip is NOT cleared
 // first; anything there will be covered pixel by pixel. Pass in color
+lt
 // (as a single 'packed' 32-bit value, which you can get by calling
 // strip.Color(red, green, blue) as shown in the loop() function above),
 // and a delay time (in milliseconds) between pixels.
