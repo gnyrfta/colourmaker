@@ -29,6 +29,13 @@ const int BUTTON_PIN_YELLOW2 = 5;
 const int BUTTON_PIN_BLUE2 = 6;
 const int BUTTON_PIN_GREEN2 = 7;
 
+int buttonStateYellow1 = 0; //For future multiple use on same button - first press toggles state 1, second press state 0 (or 2) et.c. 
+int buttonStateBlue1 = 0;
+int buttonStateGreen1 = 0;
+int buttonStateYellow2 = 0;
+int buttonStateBlue2 = 0;
+int buttonStateGreen2 = 0;
+
 // Variables will change:
 int lastStateY1 = LOW;  // the previous state from the input pin
 int lastStateB1 = LOW;  // the previous state from the input pin
@@ -104,8 +111,9 @@ void loop() {
   }
   else if(currentProgram == 7) // Does nothing right now.
   {
-    strip2.clear();
-    strip2.show();2
+   // strip2.clear();
+    whiteLight();
+    strip2.show();
     
   }
 
@@ -115,7 +123,7 @@ void loop() {
 
 // Fill strip pixels one after another with a color. Strip is NOT cleared
 // first; anything there will be covered pixel by pixel. Pass in color
-lt
+
 // (as a single 'packed' 32-bit value, which you can get by calling
 // strip.Color(red, green, blue) as shown in the loop() function above),
 // and a delay time (in milliseconds) between pixels.
@@ -205,23 +213,10 @@ void colorWipe(uint32_t color, int wait) {
   }
 }
 
-// Theater-marquee-style chasing lights. Pass in a color (32-bit value,
-// a la strip.Color(r,g,b) as mentioned above), and a delay time (in ms)
-// between frames.
-void theaterChase(uint32_t color, int wait) {
-  for(int a=0; a<10; a++) {  // Repeat 10 times...
-    for(int b=0; b<3; b++) { //  'b' counts from 0 to 2...
-      strip.clear();         //   Set all pixels in RAM to 0 (off)
-      // 'c' counts up from 'b' to end of strip in steps of 3...
-      for(int c=b; c<strip.numPixels(); c += 3) {
-        strip.setPixelColor(c, color); // Set pixel 'c' to value 'color'
-      }
-      strip.show(); // Update strip with new contents
-      delay(wait);  // Pause for a moment
-    }
-  }
+void animation()
+{
+  
 }
-
 // Rainbow cycle along whole strip. Pass delay time (in ms) between frames.
 void rainbow(int wait, int programNumber) {
   int buttonPressed = 0;
@@ -298,24 +293,11 @@ void rainbow2(int wait, int programNumber) {
     delay(wait);  // Pause for a moment
   }
 }
-// Rainbow-enhanced theater marquee. Pass delay time (in ms) between frames.
-void theaterChaseRainbow(int wait) {
-  int firstPixelHue = 0;     // First pixel starts at red (hue 0)
-  for(int a=0; a<30; a++) {  // Repeat 30 times...
-    for(int b=0; b<3; b++) { //  'b' counts from 0 to 2...
-      strip.clear();         //   Set all pixels in RAM to 0 (off)
-      // 'c' counts up from 'b' to end of strip in increments of 3...
-      for(int c=b; c<strip.numPixels(); c += 3) {
-        // hue of pixel 'c' is offset by an amount to make one full
-        // revolution of the color wheel (range 65536) along the length
-        // of the strip (strip.numPixels() steps):
-        int      hue   = firstPixelHue + c * 65536L / strip.numPixels();
-        uint32_t color = strip.gamma32(strip.ColorHSV(hue)); // hue -> RGB
-        strip.setPixelColor(c, color); // Set pixel 'c' to value 'color'
-      }
-      strip.show();                // Update strip with new contents
-      delay(wait);                 // Pause for a moment
-      firstPixelHue += 65536 / 90; // One cycle of color wheel over 90 frames
-    }
+void whiteLight() {
+  strip2.setBrightness(255);                
+  for(int i =0;i<strip.numPixels();i++)
+  {
+  strip2.setPixelColor(i,255,255,255);
   }
 }
+
